@@ -1,0 +1,94 @@
+; When renaming the stanza package name below, also rename it in the folder stanza.proj
+; See docs.jitx.com for help
+#use-added-syntax(jitx)
+defpackage components/rp2040:
+  import core
+  import collections
+  import jitx
+  import jitx/commands
+  import ocdb/utils/defaults
+  import ocdb/utils/landpatterns
+  import ocdb/utils/box-symbol
+  import ocdb/utils/bundles
+
+pcb-landpattern lp-rp2040 :
+
+  make-qfn-landpattern(pin-pitch, lead-span, n-pins, pad-width, pad-length, corner-pads) where :
+    val pin-pitch = 0.4
+    val lead-span = 7.75
+    val n-pins = 56
+    val pad-width = 0.2
+    val pad-length = 0.875
+    val corner-pads = false
+
+  pad p[57] : smd-pad(3.2, 3.2) at loc(0.0, 0.0)  
+
+public pcb-component component :
+  name = "rp2040"
+  description = "RP2040 MCU"
+  mpn = "RP2040"
+  manufacturer = "Raspberry Pi"
+  reference-prefix = "U"
+
+  pin-properties :
+    [pin:Ref      | pads:Int ...        | side:Dir ]
+
+    [IOVDD        | 1, 10, 22, 33, 49   | Left     ]
+    [DVDD         | 23, 50              | Left     ]
+    [ADC_AVDD     | 43                  | Left     ]
+    [USB_VDD      | 48                  | Left     ]
+    [VREG_VIN     | 44                  | Left     ]
+    [VREG_VOUT    | 45                  | Left     ]
+
+    [GND          | 57                  | Left     ]
+
+    [TESTEN       | 19                  | Left     ]
+    [XIN          | 20                  | Left     ]
+    [XOUT         | 21                  | Left     ]
+    [SWCLK        | 24                  | Left     ]
+    [SWDIO        | 25                  | Left     ]
+    [RUN          | 26                  | Left     ]
+    [USB_DP       | 46                  | Left     ]
+    [USB_DM       | 47                  | Left     ]
+
+    [GPIO0        | 2                   | Right    ]
+    [GPIO1        | 3                   | Right    ]
+    [GPIO2        | 4                   | Right    ]
+    [GPIO3        | 5                   | Right    ]
+    [GPIO4        | 6                   | Right    ]
+    [GPIO5        | 7                   | Right    ]
+    [GPIO6        | 8                   | Right    ]
+    [GPIO7        | 9                   | Right    ]
+    [GPIO8        | 11                  | Right    ]
+    [GPIO9        | 12                  | Right    ]
+    [GPIO10       | 13                  | Right    ]
+    [GPIO11       | 14                  | Right    ]
+    [GPIO12       | 15                  | Right    ]
+    [GPIO13       | 16                  | Right    ]
+    [GPIO14       | 17                  | Right    ]
+    [GPIO15       | 18                  | Right    ]
+    [GPIO16       | 27                  | Right    ]
+    [GPIO17       | 28                  | Right    ]
+    [GPIO18       | 29                  | Right    ]
+    [GPIO19       | 30                  | Right    ]
+    [GPIO20       | 31                  | Right    ]
+    [GPIO21       | 32                  | Right    ]
+    [GPIO22       | 34                  | Right    ]
+    [GPIO23       | 35                  | Right    ]
+    [GPIO24       | 36                  | Right    ]
+    [GPIO25       | 37                  | Right    ]
+    [GPIO26       | 38                  | Right    ]
+    [GPIO27       | 39                  | Right    ]
+    [GPIO28       | 40                  | Right    ]
+    [GPIO29       | 41                  | Right    ]
+
+  make-box-symbol()
+  assign-landpattern(lp-rp2040)
+
+  ; supports power:
+  ;   power.vdd => self.VCC
+  ;   power.gnd => self.GND
+
+; Visualize the symbol and landpattern in the VSCode visualizer.
+; Remove before use of the component in a design
+view(component)
