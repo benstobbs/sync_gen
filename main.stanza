@@ -7,6 +7,7 @@ defpackage main :
   import ocdb/utils/generic-components
   import helpers
   import components/adv7391
+  import components/rp2040
 
 ; Define the shape/size of the board
 val board-shape = RoundedRectangle(50.0, 50.0, 2.0)
@@ -73,11 +74,14 @@ pcb-module my-design :
   ; Video source
   inst adv : adv7391-module()
 
+  ; MCU
+  inst rp : rp2040-module()
+
   ; Power nets
   net v5v (ldo3v3.vin, ldo1v8.vin)
-  net v3v3 (ldo3v3.vout, adv.p3v3, adv.vddio)
+  net v3v3 (ldo3v3.vout, adv.p3v3, adv.vddio, rp.p3v3)
   net v1v8 (ldo1v8.vout, adv.p1v8)
-  net gnd (ldo3v3.gnd, ldo1v8.gnd, adv.gnd)
+  net gnd (ldo3v3.gnd, ldo1v8.gnd, adv.gnd, rp.gnd)
 
   ; Write the board version on silkscreen
   inst version-label  : ocdb/artwork/board-text/version-silkscreen("Version 0.0")

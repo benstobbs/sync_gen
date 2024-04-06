@@ -10,6 +10,7 @@ defpackage components/rp2040:
   import ocdb/utils/landpatterns
   import ocdb/utils/box-symbol
   import ocdb/utils/bundles
+  import ocdb/utils/generic-components
 
 pcb-landpattern lp-rp2040 :
 
@@ -89,6 +90,25 @@ public pcb-component component :
   ;   power.vdd => self.VCC
   ;   power.gnd => self.GND
 
-; Visualize the symbol and landpattern in the VSCode visualizer.
-; Remove before use of the component in a design
-view(component)
+public pcb-module rp2040-module () :
+  ; Power
+  pin p3v3
+  pin gnd
+
+  inst rp : components/rp2040/component
+
+  net v3v3 (p3v3, rp.IOVDD, rp.USB_VDD, rp.VREG_VIN)
+  net v1v1 (rp.DVDD, rp.VREG_VOUT)
+  net GND (gnd, rp.GND)
+
+  cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 2.2e-6)
+
+  cap-strap(v1v1, GND, 100.0e-9)
+  cap-strap(v1v1, GND, 100.0e-9)
+  cap-strap(v1v1, GND, 2.2e-6)
