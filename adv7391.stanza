@@ -1,0 +1,82 @@
+; When renaming the stanza package name below, also rename it in the folder stanza.proj
+; See docs.jitx.com for help
+#use-added-syntax(jitx)
+defpackage components/adv7391:
+  import core
+  import collections
+  import jitx
+  import jitx/commands
+  import ocdb/utils/defaults
+  import ocdb/utils/landpatterns
+  import ocdb/utils/box-symbol
+  import ocdb/utils/bundles
+
+pcb-landpattern lp-adv7391 :
+
+  make-qfn-landpattern(pin-pitch, lead-span, n-pins, pad-width, pad-length, corner-pads) where :
+    val pin-pitch = 0.5
+    val lead-span = 5.0
+    val n-pins = 32
+    val pad-width = 0.2
+    val pad-length = 0.4
+    val corner-pads = false
+
+  pad p[33] : smd-pad(3.1, 3.1) at loc(0.0, 0.0)  
+
+public pcb-component component :
+  name = "adv7391"
+  description = "3 DAC output analog video encoder"
+  mpn = "ADV7391"
+  manufacturer = "Analog Devices"
+  reference-prefix = "U"
+
+  pin-properties :
+    [pin:Ref      | pads:Int ... | side:Dir ]
+    
+    [P7           | 9            | Left     ]
+    [P6           | 8            | Left     ]
+    [P5           | 7            | Left     ]
+    [P4           | 4            | Left     ]
+    [P3           | 3            | Left     ]
+    [P2           | 2            | Left     ]
+    [P1           | 31           | Left     ]
+    [P0           | 30           | Left     ]
+
+    [DAC1         | 22           | Right    ]
+    [DAC2         | 21           | Right    ]
+    [DAC3         | 20           | Right    ]
+
+    [CLKIN        | 13           | Left     ]
+    [nHSYNC       | 27           | Right    ]
+    [nVSYNC       | 26           | Right    ]
+    [SFL          | 25           | Right    ]
+    [RSET         | 24           | Left     ]
+    [COMP         | 23           | Left     ]
+    [SCL          | 12           | Left     ]
+    [SDA          | 11           | Left     ]
+    [ALSB         | 10           | Left     ]
+    [nRESET       | 14           | Left     ]
+
+    [EXT_LF       | 16           | Left     ]
+
+    [VAA          | 19           | Left     ]
+    [VDD          | 5, 28        | Left     ]
+    [VDDIO        | 1            | Left     ]
+    [PVDD         | 17           | Left     ]
+
+    [PGND         | 15           | Right    ]
+    [AGND         | 18           | Right    ]
+    [DGND         | 6, 29        | Right    ]
+    [GND_IO       | 32           | Right    ]
+    [EPAD         | 33           | Right    ]
+
+  make-box-symbol()
+  assign-landpattern(lp-adv7391)
+
+  ; supports power:
+  ;   power.vdd => self.VCC
+  ;   power.gnd => self.GND
+
+; Visualize the symbol and landpattern in the VSCode visualizer.
+; Remove before use of the component in a design
+view(component)
