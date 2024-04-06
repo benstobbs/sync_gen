@@ -11,6 +11,8 @@ defpackage components/rp2040:
   import ocdb/utils/box-symbol
   import ocdb/utils/bundles
   import ocdb/utils/generic-components
+  import ocdb/components/windbond/W25Q128JVSIQ
+  import ocdb/components/korean-hroparts-elec/K2-1102SP-C4SC-04
 
 pcb-landpattern lp-rp2040 :
 
@@ -52,6 +54,13 @@ public pcb-component component :
     [USB_DP       | 46                  | Left     ]
     [USB_DM       | 47                  | Left     ]
 
+    [QSPI_SD3     | 51                  | Left     ]
+    [QSPI_SCLK    | 52                  | Left     ]
+    [QSPI_SD0     | 53                  | Left     ]
+    [QSPI_SD2     | 54                  | Left     ]
+    [QSPI_SD1     | 55                  | Left     ]
+    [QSPI_SS_N    | 56                  | Left     ]
+
     [GPIO0        | 2                   | Right    ]
     [GPIO1        | 3                   | Right    ]
     [GPIO2        | 4                   | Right    ]
@@ -91,15 +100,33 @@ public pcb-component component :
   ;   power.gnd => self.GND
 
 public pcb-module rp2040-module () :
+  inst rp : components/rp2040/component
+
+  ; Flash
+  inst flash : ocdb/components/windbond/W25Q128JVSIQ/component
+
+  net (flash.nWP, rp.QSPI_SD2)
+  net (flash.nHOLD, rp.QSPI_SD3)
+  net (flash.spi.cs, rp.QSPI_SS_N)
+  net (flash.spi.sdo, rp.QSPI_SD1)
+  net (flash.spi.sdi, rp.QSPI_SD0)
+  net (flash.spi.sck, rp.QSPI_SCLK)
+
+  cap-strap(flash.VCC, flash.GND, 100.0e-9)
+  cap-strap(flash.VCC, flash.GND, 2.2e-6)
+
+  ; USB Boot Button
+  inst boot_btn : ocdb/components/korean-hroparts-elec/K2-1102SP-C4SC-04/component
+  net (boot_btn.p[3], rp.GND)
+  res-strap(boot_btn.p[1], flash.spi.cs, 1.0e3)
+
   ; Power
   pin p3v3
   pin gnd
 
-  inst rp : components/rp2040/component
-
-  net v3v3 (p3v3, rp.IOVDD, rp.USB_VDD, rp.VREG_VIN)
+  net v3v3 (p3v3, rp.IOVDD, rp.USB_VDD, rp.VREG_VIN, flash.VCC)
   net v1v1 (rp.DVDD, rp.VREG_VOUT)
-  net GND (gnd, rp.GND)
+  net GND (gnd, rp.GND, flash.GND)
 
   cap-strap(v3v3, GND, 100.0e-9)
   cap-strap(v3v3, GND, 100.0e-9)
@@ -112,3 +139,4 @@ public pcb-module rp2040-module () :
   cap-strap(v1v1, GND, 100.0e-9)
   cap-strap(v1v1, GND, 100.0e-9)
   cap-strap(v1v1, GND, 2.2e-6)
+

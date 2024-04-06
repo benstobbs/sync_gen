@@ -138,6 +138,6 @@ export-cad()
 
 ; View the results
 view-board()
-view-schematic()
+; view-schematic()
 ; view-design-explorer()
 ; view-bom(BOM-STD)
