@@ -2,3 +2,6 @@
 /pending.*dat
 /open-components-database
 /.view
+/parts-db
+/designs
+/bom-vendors

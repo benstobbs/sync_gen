@@ -10,6 +10,7 @@ defpackage components/adv7391:
   import ocdb/utils/landpatterns
   import ocdb/utils/box-symbol
   import ocdb/utils/bundles
+  import ocdb/utils/generic-components
 
 pcb-landpattern lp-adv7391 :
 
@@ -32,7 +33,7 @@ public pcb-component component :
 
   pin-properties :
     [pin:Ref      | pads:Int ... | side:Dir ]
-    
+
     [P7           | 9            | Left     ]
     [P6           | 8            | Left     ]
     [P5           | 7            | Left     ]
@@ -77,6 +78,49 @@ public pcb-component component :
   ;   power.vdd => self.VCC
   ;   power.gnd => self.GND
 
+
+public pcb-module adv7391-module () :
+  pin p1v8
+  pin p3v3
+  pin vddio
+  pin gnd
+
+  inst adv : components/adv7391/component
+
+  net v1V8 (p1v8, adv.VDD, adv.PVDD)
+  net v3V3 (p3v3, adv.VAA)
+  net VDDIO (vddio, adv.VDDIO)
+  net GND (gnd, adv.PGND, adv.AGND, adv.DGND, adv.GND_IO, adv.EPAD)
+
+  ; as per dev kit
+  cap-strap(adv.COMP, v3V3, 2.2e-9)
+  res-strap(adv.RSET, GND, 510.0)
+
+  cap-strap(adv.EXT_LF, v1V8, 12.0e-9)
+  net filt_mid ()
+  cap-strap(v1V8, filt_mid, 150.0e-9)
+  res-strap(adv.EXT_LF, filt_mid, 178.0)
+
+  ; output terminators
+  res-strap(adv.DAC1, GND, 75.0)
+  res-strap(adv.DAC2, GND, 75.0)
+  res-strap(adv.DAC3, GND, 75.0)
+
+  ; decoupling
+  cap-strap(VDDIO, GND, 10.0e-9)
+  cap-strap(VDDIO, GND, 100.0e-9)
+
+  cap-strap(v1V8, GND, 10.0e-9)
+  cap-strap(v1V8, GND, 10.0e-9)
+  cap-strap(v1V8, GND, 10.0e-9)
+  cap-strap(v1V8, GND, 100.0e-9)
+  cap-strap(v1V8, GND, 100.0e-9)
+  cap-strap(v1V8, GND, 100.0e-9)
+
+  cap-strap(v3V3, GND, 10.0e-9)
+  cap-strap(v3V3, GND, 100.0e-9)
+  cap-strap(v3V3, GND, 1.0e-6)
+
 ; Visualize the symbol and landpattern in the VSCode visualizer.
 ; Remove before use of the component in a design
-view(component)
+; view(component)
