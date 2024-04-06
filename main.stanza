@@ -9,11 +9,75 @@ defpackage main :
   import components/adv7391
 
 ; Define the shape/size of the board
-val board-shape = RoundedRectangle(30.0, 18.5, 0.25)
+val board-shape = RoundedRectangle(50.0, 50.0, 2.0)
+
+pcb-module lm317a-regulator (output-voltage:Toleranced) :
+  pin vin
+  pin vout
+  pin gnd
+  pin adj
+
+  inst lm317a : ocdb/components/unisonic/LM317A/component
+
+  net (vin  lm317a.input)
+  net (vout lm317a.output)
+  
+  cap-strap(lm317a.input, gnd, 0.1e-6)
+  cap-strap(lm317a.output, gnd, 1.0e-6)
+ 
+  ; inside pcb-module lm317a-regulator 
+  schematic-group(self) = lm317a
+  layout-group(self) = lm317a
+
+  ; How much variability can we expect from the regulator alone?
+  val refVoltage = property(lm317a.reference-voltage)
+  val inherent-variance = tol+%(refVoltage)
+  if inherent-variance > tol+%(output-voltage):
+    fatal("Target design accuracy infeasible with LM317A %_ > %_" % [inherent-variance tol+%(output-voltage)])
+
+  ; Budget variability for the voltage divider
+  val target-variance = tol+%(output-voltage) - inherent-variance
+
+  ; 5mA of voltage-divider current to compensate for regulator adj current
+  val divider-current = 5.0e-3
+  val adj-current = property(lm317a.adj-current) ; retrieve the property from the component definition
+  ; Estimate offset voltage caused by current sourced from adj pin
+  val est-v-adj-offset = (typ-value(output-voltage) - typ-value(refVoltage)) / divider-current * adj-current
+
+  inst output-voltage-divider : ocdb/modules/passive-circuits/voltage-divider(source-voltage = high-voltage, divider-output = adj-voltage, current = current) where :
+    val high-voltage = tol%(center-value(output-voltage) - est-v-adj-offset, 0.0)
+    val adj-voltage = tol%(typ-value(refVoltage),target-variance)
+    val current = divider-current
+
+  ; Calculate the actual offset now that we know the optimized value of the resistors
+  val true-adj-offset = adj-current * (property(output-voltage-divider.r-lo.resistance) as Double)
+  val vref = property(output-voltage-divider.output-voltage)
+
+  ; Calculate the possible min and max values for the output voltage
+  val out = refVoltage * typ(center-value(output-voltage)) / vref + typ(true-adj-offset)
+
+  ; Make sure that the voltage specification is met
+  check ocdb/utils/checks/within?(output-voltage, out)
+
+  net (output-voltage-divider.in lm317a.output) 
+  net (output-voltage-divider.out lm317a.adj adj) 
+  net (output-voltage-divider.lo gnd)
+
 
 ; Module to run as a design
 pcb-module my-design :
+  ; LDOs
+  inst ldo3v3 : lm317a-regulator(tol%(3.3, 5.0))
+  inst ldo1v8 : lm317a-regulator(tol%(1.8, 5.0))
+  
+  ; Video source
   inst adv : adv7391-module()
+
+  ; Power nets
+  net v5v (ldo3v3.vin, ldo1v8.vin)
+  net v3v3 (ldo3v3.vout, adv.p3v3, adv.vddio)
+  net v1v8 (ldo1v8.vout, adv.p1v8)
+  net gnd (ldo3v3.gnd, ldo1v8.gnd, adv.gnd)
 
   ; Write the board version on silkscreen
   inst version-label  : ocdb/artwork/board-text/version-silkscreen("Version 0.0")
@@ -29,11 +93,41 @@ setup-design(
   ocdb/utils/defaults/default-board(ocdb/manufacturers/stackups/jlcpcb-jlc2313, board-shape)
 )
 
+; override default rules
+; to stop large soldermask openings
+pcb-rules rules :
+  min-copper-width = 0.13 ; 5mil
+  min-copper-copper-space = 0.2 ; 
+  min-copper-hole-space = 0.2032 ; 8mil
+  min-copper-edge-space = 0.381 ; 10mil outer, but 15mil inner
+  min-annular-ring = 0.1524 ; 6mil
+  min-drill-diameter = 0.254 ; 10mil
+  min-silkscreen-width = 0.0762 ; 3mil
+  min-pitch-leaded = 0.35 ; guess
+  min-pitch-bga = 0.35 ; guess
+  max-board-width = 457.2 ; 18in
+  max-board-height = 609.6 ; 24in
+  solder-mask-registration = 0.0
+  min-silk-solder-mask-space = 0.15
+  min-silkscreen-text-height = 0.762
+  min-th-pad-expand-outer = 0.0
+  min-soldermask-opening = 0.0
+  min-soldermask-bridge = 0.0
+  min-hole-to-hole = 0.254
+  min-pth-pin-solder-clearance = 3.0
+
+set-rules(rules)
+
 ; Set the schematic sheet size
 set-paper(ANSI-A)
 
 ; Set the top level module (the module to be compile into a schematic and PCB)
 set-main-module(my-design)
+
+; export to kicad
+set-export-backend(`kicad)
+set-use-layout-groups()
+export-cad()
 
 ; Use any helper function from helpers.stanza here
 ; run-check-on-design(my-design)
@@ -42,4 +136,4 @@ set-main-module(my-design)
 view-board()
 view-schematic()
 ; view-design-explorer()
-view-bom(BOM-STD)
+; view-bom(BOM-STD)
