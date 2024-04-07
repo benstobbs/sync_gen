@@ -94,9 +94,14 @@ pcb-module my-design :
   ; I2C
   net sda (rp.gpio[0], adv.sda)
   net scl (rp.gpio[1], adv.scl)
+  res-strap(sda, rp.p3v3, 4.7e3)
+  res-strap(scl, rp.p3v3, 4.7e3)
 
-  res-strap(sda, rp.gnd, 4.7e3)
-  res-strap(scl, rp.gnd, 4.7e3)
+  ; 6 LEDs in RP2040 GPIOs 2 through 7
+  for i in 2 through 7 do:
+    inst led : components/HL-PST-1608S35FC/component
+    net (led.a, rp.p3v3)
+    res-strap(led.c, rp.gpio[i], 1.0e3)
 
   ; USB
   inst usb : ocdb/components/korean-hroparts-elec/TYPE-C-31-M-12/module(SinkDefault)
@@ -167,4 +172,4 @@ export-cad()
 view-board()
 ; view-schematic()
 ; view-design-explorer()
-; view-bom(BOM-STD)
+view-bom(BOM-STD)

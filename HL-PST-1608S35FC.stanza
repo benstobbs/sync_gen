@@ -1,0 +1,30 @@
+; When renaming the stanza package name below, also rename it in the folder stanza.proj
+; See docs.jitx.com for help
+#use-added-syntax(jitx)
+defpackage components/HL-PST-1608S35FC:
+  import core
+  import collections
+  import jitx
+  import jitx/commands
+  import ocdb/utils/defaults
+  import ocdb/utils/landpatterns
+  import ocdb/utils/box-symbol
+  import ocdb/utils/bundles
+
+pcb-landpattern lp-HL-PST-1608S35FC :
+  make-ipc-two-pin-landpattern("0603")
+
+public pcb-component component :
+  name = "HL-PST-1608S35FC"
+  description = "0603 Red LED"
+  mpn = "HL-PST-1608S35FC"
+  manufacturer = "HONGLITRONIC"
+  reference-prefix = "D"
+
+  pin-properties :
+    [pin:Ref      | pads:Int ... | side:Dir ]
+    [a            | 1            | Left     ]
+    [c            | 2            | Right    ]
+
+  make-box-symbol()
+  assign-landpattern(lp-HL-PST-1608S35FC)
