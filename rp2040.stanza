@@ -95,12 +95,15 @@ public pcb-component component :
   make-box-symbol()
   assign-landpattern(lp-rp2040)
 
-  ; supports power:
-  ;   power.vdd => self.VCC
-  ;   power.gnd => self.GND
-
 public pcb-module rp2040-module () :
   inst rp : components/rp2040/component
+
+  ; USB
+  pin usb_p
+  pin usb_n
+  
+  res-strap(rp.USB_DP, usb_p, 27.0)
+  res-strap(rp.USB_DM, usb_n, 27.0)
 
   ; Flash
   inst flash : ocdb/components/windbond/W25Q128JVSIQ/component

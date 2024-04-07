@@ -8,6 +8,7 @@ defpackage main :
   import helpers
   import components/adv7391
   import components/rp2040
+  import ocdb/utils/generator-utils
 
 ; Define the shape/size of the board
 val board-shape = RoundedRectangle(50.0, 50.0, 2.0)
@@ -77,11 +78,17 @@ pcb-module my-design :
   ; MCU
   inst rp : rp2040-module()
 
+  ; USB
+  inst usb : ocdb/components/korean-hroparts-elec/TYPE-C-31-M-12/module(SinkDefault)
+  net (usb.usb-c.data[1].P, usb.usb-c.data[2].P, rp.usb_p)
+  net (usb.usb-c.data[1].N, usb.usb-c.data[2].N, rp.usb_n)
+  cap-strap(usb.usb-c.vbus.vdd, usb.usb-c.vbus.gnd, 1.0e-6)
+
   ; Power nets
-  net v5v (ldo3v3.vin, ldo1v8.vin)
+  net v5v (ldo3v3.vin, ldo1v8.vin, usb.usb-c.vbus.vdd)
   net v3v3 (ldo3v3.vout, adv.p3v3, adv.vddio, rp.p3v3)
   net v1v8 (ldo1v8.vout, adv.p1v8)
-  net gnd (ldo3v3.gnd, ldo1v8.gnd, adv.gnd, rp.gnd)
+  net gnd (ldo3v3.gnd, ldo1v8.gnd, adv.gnd, rp.gnd, usb.usb-c.vbus.gnd, usb.conn.SHIELD[0], usb.conn.SHIELD[1], usb.conn.SHIELD[2], usb.conn.SHIELD[3])
 
   ; Write the board version on silkscreen
   inst version-label  : ocdb/artwork/board-text/version-silkscreen("Version 0.0")
