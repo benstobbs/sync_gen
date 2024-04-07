@@ -1,0 +1,44 @@
+; When renaming the stanza package name below, also rename it in the folder stanza.proj
+; See docs.jitx.com for help
+#use-added-syntax(jitx)
+defpackage components/DOSIN-801-0084:
+  import core
+  import collections
+  import jitx
+  import jitx/commands
+  import ocdb/utils/defaults
+  import ocdb/utils/landpatterns
+  import ocdb/utils/box-symbol
+  import ocdb/utils/bundles
+
+pcb-landpattern lp-DOSIN-801-0084 :
+  pad p[1] : pth-pad(1.17 / 2.0, 2.0 / 2.0) at loc(0.0, 0.0)
+
+  pad p[2] : pth-pad(2.11 / 2.0, 3.0 / 2.0) at loc(-3.3, -3.3)
+  pad p[3] : pth-pad(2.11 / 2.0, 3.0 / 2.0) at loc(-3.3, 3.3)
+  pad p[4] : pth-pad(2.11 / 2.0, 3.0 / 2.0) at loc(3.3, -3.3)
+  pad p[5] : pth-pad(2.11 / 2.0, 3.0 / 2.0) at loc(3.3, 3.3)
+
+  layer(Courtyard(Top)) = Rectangle(14.8, 27.83, loc(0.0, 8.715))
+
+  layer(Silkscreen("F-SilkS", Top)) = Line(0.12, [Point(-7.4, -5.2), Point(7.4, -5.2)])
+  layer(Silkscreen("F-SilkS", Top)) = Line(0.12, [Point(7.4, -5.2), Point(7.4, 22.63)])
+  layer(Silkscreen("F-SilkS", Top)) = Line(0.12, [Point(7.4, 22.63), Point(-7.4, 22.63)])
+  layer(Silkscreen("F-SilkS", Top)) = Line(0.12, [Point(-7.4, 22.63), Point(-7.4, -5.2)])
+
+
+public pcb-component component :
+  name = "DOSIN-801-0084"
+  description = "75R 3 GHz TH BNC Connector"
+  mpn = "DOSIN-801-0084"
+  manufacturer = "dosinconn"
+  reference-prefix = "J"
+
+  pin-properties :
+    [pin:Ref      | pads:Int ... | side:Dir ]
+    [SIG          | 1            | Left     ]
+    [GND          | 2, 3, 4, 5   | Right    ]
+
+  make-box-symbol()
+  assign-landpattern(lp-DOSIN-801-0084)
+  

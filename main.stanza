@@ -11,7 +11,7 @@ defpackage main :
   import ocdb/utils/generator-utils
 
 ; Define the shape/size of the board
-val board-shape = RoundedRectangle(50.0, 50.0, 2.0)
+val board-shape = RoundedRectangle(100.0, 100.0, 2.0)
 
 pcb-module lm317a-regulator (output-voltage:Toleranced) :
   pin vin
@@ -74,6 +74,19 @@ pcb-module my-design :
   
   ; Video source
   inst adv : adv7391-module()
+
+  ; BNC Outputs
+  inst bnc1 : components/DOSIN-801-0084/component
+  net (bnc1.SIG, adv.dac1)
+  net (bnc1.GND, adv.gnd)
+
+  inst bnc2 : components/DOSIN-801-0084/component
+  net (bnc2.SIG, adv.dac2)
+  net (bnc2.GND, adv.gnd)
+
+  inst bnc3 : components/DOSIN-801-0084/component
+  net (bnc3.SIG, adv.dac3)
+  net (bnc3.GND, adv.gnd)
 
   ; MCU
   inst rp : rp2040-module()

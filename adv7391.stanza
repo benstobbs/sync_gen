@@ -80,12 +80,24 @@ public pcb-component component :
 
 
 public pcb-module adv7391-module () :
+  inst adv : components/adv7391/component
+
   pin p1v8
   pin p3v3
   pin vddio
   pin gnd
 
-  inst adv : components/adv7391/component
+  pin scl
+  net (scl, adv.SCL)
+  pin sda
+  net (sda, adv.SDA)
+
+  pin dac1
+  net (dac1, adv.DAC1)
+  pin dac2
+  net (dac2, adv.DAC2)
+  pin dac3
+  net (dac3, adv.DAC3)
 
   net v1V8 (p1v8, adv.VDD, adv.PVDD)
   net v3V3 (p3v3, adv.VAA)
@@ -120,7 +132,3 @@ public pcb-module adv7391-module () :
   cap-strap(v3V3, GND, 10.0e-9)
   cap-strap(v3V3, GND, 100.0e-9)
   cap-strap(v3V3, GND, 1.0e-6)
-
-; Visualize the symbol and landpattern in the VSCode visualizer.
-; Remove before use of the component in a design
-; view(component)
