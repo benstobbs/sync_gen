@@ -87,6 +87,22 @@ public pcb-module adv7391-module () :
   pin vddio
   pin gnd
 
+  pin nreset
+  net (nreset, adv.nRESET)
+
+  pin clkin
+  net (clkin, adv.CLKIN)
+
+  port din : pin[8]
+  net (din[0], adv.P0)
+  net (din[1], adv.P1)
+  net (din[2], adv.P2)
+  net (din[3], adv.P3)
+  net (din[4], adv.P4)
+  net (din[5], adv.P5)
+  net (din[6], adv.P6)
+  net (din[7], adv.P7)
+
   pin scl
   net (scl, adv.SCL)
   pin sda
@@ -98,6 +114,18 @@ public pcb-module adv7391-module () :
   net (dac2, adv.DAC2)
   pin dac3
   net (dac3, adv.DAC3)
+
+  pin alsb
+  net (alsb, adv.ALSB)
+
+  pin nhsync
+  net (nhsync, adv.nHSYNC)
+
+  pin nvsync
+  net (nvsync, adv.nVSYNC)
+
+  pin sfl
+  net (sfl, adv.SFL)
 
   net v1V8 (p1v8, adv.VDD, adv.PVDD)
   net v3V3 (p3v3, adv.VAA)

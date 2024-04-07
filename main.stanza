@@ -11,7 +11,7 @@ defpackage main :
   import ocdb/utils/generator-utils
 
 ; Define the shape/size of the board
-val board-shape = RoundedRectangle(100.0, 100.0, 2.0)
+val board-shape = RoundedRectangle(50.0, 50.0, 2.0)
 
 pcb-module lm317a-regulator (output-voltage:Toleranced) :
   pin vin
@@ -96,6 +96,17 @@ pcb-module my-design :
   net scl (rp.gpio[1], adv.scl)
   res-strap(sda, rp.p3v3, 4.7e3)
   res-strap(scl, rp.p3v3, 4.7e3)
+
+  ; Other ADV signals
+  res-strap(rp.gpio[10], adv.nreset, 22.0)
+  res-strap(rp.gpio[11], adv.clkin, 22.0)
+  res-strap(rp.gpio[12], adv.alsb, 22.0)
+  res-strap(rp.gpio[13], adv.nhsync, 22.0)
+  res-strap(rp.gpio[14], adv.nvsync, 22.0)
+  res-strap(rp.gpio[15], adv.sfl, 22.0)
+
+  for i in 0 through 7 do:
+    res-strap(rp.gpio[i + 16], adv.din[i], 22.0)
 
   ; 6 LEDs in RP2040 GPIOs 2 through 7
   for i in 2 through 7 do:
