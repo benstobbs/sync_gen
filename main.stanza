@@ -103,6 +103,13 @@ pcb-module my-design :
     net (led.a, rp.p3v3)
     res-strap(led.c, rp.gpio[i], 1.0e3)
 
+  ; 2 buttons in RP2040 GPIOs 8 and 9
+  for i in 8 through 9 do:
+    inst btn : ocdb/components/korean-hroparts-elec/K2-1102SP-C4SC-04/component
+    net (btn.p[3], rp.gnd)
+    res-strap(btn.p[1], rp.p3v3, 10.0e3)
+    net (btn.p[1], rp.gpio[i])
+
   ; USB
   inst usb : ocdb/components/korean-hroparts-elec/TYPE-C-31-M-12/module(SinkDefault)
   net (usb.usb-c.data[1].P, usb.usb-c.data[2].P, rp.usb_p)
