@@ -91,6 +91,13 @@ pcb-module my-design :
   ; MCU
   inst rp : rp2040-module()
 
+  ; I2C
+  net sda (rp.gpio[0], adv.sda)
+  net scl (rp.gpio[1], adv.scl)
+
+  res-strap(sda, rp.gnd, 4.7e3)
+  res-strap(scl, rp.gnd, 4.7e3)
+
   ; USB
   inst usb : ocdb/components/korean-hroparts-elec/TYPE-C-31-M-12/module(SinkDefault)
   net (usb.usb-c.data[1].P, usb.usb-c.data[2].P, rp.usb_p)

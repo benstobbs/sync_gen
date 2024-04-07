@@ -98,6 +98,39 @@ public pcb-component component :
 public pcb-module rp2040-module () :
   inst rp : components/rp2040/component
 
+  ; GPIO
+  port gpio : pin[30]
+  net (gpio[0], rp.GPIO0)
+  net (gpio[1], rp.GPIO1)
+  net (gpio[2], rp.GPIO2)
+  net (gpio[3], rp.GPIO3)
+  net (gpio[4], rp.GPIO4)
+  net (gpio[5], rp.GPIO5)
+  net (gpio[6], rp.GPIO6)
+  net (gpio[7], rp.GPIO7)
+  net (gpio[8], rp.GPIO8)
+  net (gpio[9], rp.GPIO9)
+  net (gpio[10], rp.GPIO10)
+  net (gpio[11], rp.GPIO11)
+  net (gpio[12], rp.GPIO12)
+  net (gpio[13], rp.GPIO13)
+  net (gpio[14], rp.GPIO14)
+  net (gpio[15], rp.GPIO15)
+  net (gpio[16], rp.GPIO16)
+  net (gpio[17], rp.GPIO17)
+  net (gpio[18], rp.GPIO18)
+  net (gpio[19], rp.GPIO19)
+  net (gpio[20], rp.GPIO20)
+  net (gpio[21], rp.GPIO21)
+  net (gpio[22], rp.GPIO22)
+  net (gpio[23], rp.GPIO23)
+  net (gpio[24], rp.GPIO24)
+  net (gpio[25], rp.GPIO25)
+  net (gpio[26], rp.GPIO26)
+  net (gpio[27], rp.GPIO27)
+  net (gpio[28], rp.GPIO28)
+  net (gpio[29], rp.GPIO29)
+
   ; USB
   pin usb_p
   pin usb_n
