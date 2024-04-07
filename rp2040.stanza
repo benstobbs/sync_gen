@@ -120,6 +120,12 @@ public pcb-module rp2040-module () :
   net (boot_btn.p[3], rp.GND)
   res-strap(boot_btn.p[1], flash.spi.cs, 1.0e3)
 
+  ; XTAL
+  inst xtal : components/K5A1200015304P/module
+  net (xtal.xi, rp.XIN)
+  net (xtal.xo, rp.XOUT)
+  net (xtal.gnd, rp.GND)
+
   ; Power
   pin p3v3
   pin gnd

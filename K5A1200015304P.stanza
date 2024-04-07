@@ -1,0 +1,55 @@
+; When renaming the stanza package name below, also rename it in the folder stanza.proj
+; See docs.jitx.com for help
+#use-added-syntax(jitx)
+defpackage components/K5A1200015304P:
+  import core
+  import collections
+  import jitx
+  import jitx/commands
+  import ocdb/utils/defaults
+  import ocdb/utils/landpatterns
+  import ocdb/utils/box-symbol
+  import ocdb/utils/bundles
+  import ocdb/utils/generic-components
+
+pcb-landpattern lp-K5A1200015304P :
+  make-n-pin-soic-landpattern(number-of-leads, pitch, lead-span, package-length,
+      package-width, terminal-length, terminal-width) where :
+    val number-of-leads = 4
+    val pitch = 3.8
+    val lead-span = tol(3.6, 0.1)
+    val package-length = tol(3.2, 0.3)
+    val package-width = tol(5.0, 0.3)
+    val terminal-length = tol(1.3, 0.1),
+    val terminal-width = tol(1.6, 0.1)
+
+public pcb-component component :
+  name = "K5A1200015304P"
+  description = "12 MHz 15pF Crystal"
+  mpn = "K5A1200015304P"
+  manufacturer = "KYX"
+  reference-prefix = "X"
+
+  pin-properties :
+    [pin:Ref      | pads:Int ... | side:Dir ]
+    [XI           | 1            | Left     ]
+    [XO           | 3            | Left     ]
+    [GND          | 2, 4         | Right    ]
+
+  make-box-symbol()
+  assign-landpattern(lp-K5A1200015304P)
+
+public pcb-module module :
+  pin xi
+  pin xo
+  pin gnd
+
+  inst x : components/K5A1200015304P/component
+
+  cap-strap(x.XI, x.GND, 15.0e-12)
+  cap-strap(x.XO, x.GND, 15.0e-12)
+  res-strap(x.XI, x.XO, 1.0e6)
+
+  net (xi, x.XI)
+  net (xo, x.XO)
+  net (gnd, x.GND)
