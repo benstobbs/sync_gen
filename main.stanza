@@ -122,6 +122,12 @@ pcb-module my-design :
   net v1v8 (ldo1v8.vout, adv.p1v8)
   net gnd (ldo3v3.gnd, ldo1v8.gnd, adv.gnd, rp.gnd, usb.usb-c.vbus.gnd, usb.conn.SHIELD[0], usb.conn.SHIELD[1], usb.conn.SHIELD[2], usb.conn.SHIELD[3])
 
+  ; Make power nets symbols on schematic for neatness
+  symbol(v5v) = ocdb/utils/symbols/supply-sym
+  symbol(v3v3) = ocdb/utils/symbols/supply-sym
+  symbol(v1v8) = ocdb/utils/symbols/supply-sym
+  symbol(gnd) = ocdb/utils/symbols/ground-sym
+
   ; Write the board version on silkscreen
   inst version-label  : ocdb/artwork/board-text/version-silkscreen("Version 0.0")
   place(version-label) at loc(0.0, height(board-shape) / 2.0 - 1.0) on Bottom

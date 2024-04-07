@@ -34,63 +34,63 @@ public pcb-component component :
   reference-prefix = "U"
 
   pin-properties :
-    [pin:Ref      | pads:Int ...        | side:Dir ]
+    [pin:Ref      | pads:Int ...            | side:Dir ]
 
-    [IOVDD        | 1, 10, 22, 33, 49   | Left     ]
-    [DVDD         | 23, 50              | Left     ]
-    [ADC_AVDD     | 43                  | Left     ]
-    [USB_VDD      | 48                  | Left     ]
-    [VREG_VIN     | 44                  | Left     ]
-    [VREG_VOUT    | 45                  | Left     ]
+    [IOVDD        | 1, 10, 22, 33, 42, 49   | Left     ]
+    [DVDD         | 23, 50                  | Left     ]
+    [ADC_AVDD     | 43                      | Left     ]
+    [USB_VDD      | 48                      | Left     ]
+    [VREG_VIN     | 44                      | Left     ]
+    [VREG_VOUT    | 45                      | Left     ]
 
-    [GND          | 57                  | Left     ]
+    [GND          | 57                      | Left     ]
 
-    [TESTEN       | 19                  | Left     ]
-    [XIN          | 20                  | Left     ]
-    [XOUT         | 21                  | Left     ]
-    [SWCLK        | 24                  | Left     ]
-    [SWDIO        | 25                  | Left     ]
-    [RUN          | 26                  | Left     ]
-    [USB_DP       | 46                  | Left     ]
-    [USB_DM       | 47                  | Left     ]
+    [TESTEN       | 19                      | Left     ]
+    [XIN          | 20                      | Left     ]
+    [XOUT         | 21                      | Left     ]
+    [SWCLK        | 24                      | Left     ]
+    [SWDIO        | 25                      | Left     ]
+    [RUN          | 26                      | Left     ]
+    [USB_DP       | 46                      | Left     ]
+    [USB_DM       | 47                      | Left     ]
 
-    [QSPI_SD3     | 51                  | Left     ]
-    [QSPI_SCLK    | 52                  | Left     ]
-    [QSPI_SD0     | 53                  | Left     ]
-    [QSPI_SD2     | 54                  | Left     ]
-    [QSPI_SD1     | 55                  | Left     ]
-    [QSPI_SS_N    | 56                  | Left     ]
+    [QSPI_SD3     | 51                      | Left     ]
+    [QSPI_SCLK    | 52                      | Left     ]
+    [QSPI_SD0     | 53                      | Left     ]
+    [QSPI_SD2     | 54                      | Left     ]
+    [QSPI_SD1     | 55                      | Left     ]
+    [QSPI_SS_N    | 56                      | Left     ]
 
-    [GPIO0        | 2                   | Right    ]
-    [GPIO1        | 3                   | Right    ]
-    [GPIO2        | 4                   | Right    ]
-    [GPIO3        | 5                   | Right    ]
-    [GPIO4        | 6                   | Right    ]
-    [GPIO5        | 7                   | Right    ]
-    [GPIO6        | 8                   | Right    ]
-    [GPIO7        | 9                   | Right    ]
-    [GPIO8        | 11                  | Right    ]
-    [GPIO9        | 12                  | Right    ]
-    [GPIO10       | 13                  | Right    ]
-    [GPIO11       | 14                  | Right    ]
-    [GPIO12       | 15                  | Right    ]
-    [GPIO13       | 16                  | Right    ]
-    [GPIO14       | 17                  | Right    ]
-    [GPIO15       | 18                  | Right    ]
-    [GPIO16       | 27                  | Right    ]
-    [GPIO17       | 28                  | Right    ]
-    [GPIO18       | 29                  | Right    ]
-    [GPIO19       | 30                  | Right    ]
-    [GPIO20       | 31                  | Right    ]
-    [GPIO21       | 32                  | Right    ]
-    [GPIO22       | 34                  | Right    ]
-    [GPIO23       | 35                  | Right    ]
-    [GPIO24       | 36                  | Right    ]
-    [GPIO25       | 37                  | Right    ]
-    [GPIO26       | 38                  | Right    ]
-    [GPIO27       | 39                  | Right    ]
-    [GPIO28       | 40                  | Right    ]
-    [GPIO29       | 41                  | Right    ]
+    [GPIO0        | 2                       | Right    ]
+    [GPIO1        | 3                       | Right    ]
+    [GPIO2        | 4                       | Right    ]
+    [GPIO3        | 5                       | Right    ]
+    [GPIO4        | 6                       | Right    ]
+    [GPIO5        | 7                       | Right    ]
+    [GPIO6        | 8                       | Right    ]
+    [GPIO7        | 9                       | Right    ]
+    [GPIO8        | 11                      | Right    ]
+    [GPIO9        | 12                      | Right    ]
+    [GPIO10       | 13                      | Right    ]
+    [GPIO11       | 14                      | Right    ]
+    [GPIO12       | 15                      | Right    ]
+    [GPIO13       | 16                      | Right    ]
+    [GPIO14       | 17                      | Right    ]
+    [GPIO15       | 18                      | Right    ]
+    [GPIO16       | 27                      | Right    ]
+    [GPIO17       | 28                      | Right    ]
+    [GPIO18       | 29                      | Right    ]
+    [GPIO19       | 30                      | Right    ]
+    [GPIO20       | 31                      | Right    ]
+    [GPIO21       | 32                      | Right    ]
+    [GPIO22       | 34                      | Right    ]
+    [GPIO23       | 35                      | Right    ]
+    [GPIO24       | 36                      | Right    ]
+    [GPIO25       | 37                      | Right    ]
+    [GPIO26       | 38                      | Right    ]
+    [GPIO27       | 39                      | Right    ]
+    [GPIO28       | 40                      | Right    ]
+    [GPIO29       | 41                      | Right    ]
 
   make-box-symbol()
   assign-landpattern(lp-rp2040)
@@ -131,6 +131,15 @@ public pcb-module rp2040-module () :
   net (gpio[28], rp.GPIO28)
   net (gpio[29], rp.GPIO29)
 
+  ; Run high
+  net (rp.RUN, rp.IOVDD)
+
+  ; Test low
+  net (rp.TESTEN, rp.GND)
+
+  ; SWD on testpoints only
+  add-testpoint([rp.SWDIO, rp.SWCLK])
+
   ; USB
   pin usb_p
   pin usb_n
@@ -166,7 +175,7 @@ public pcb-module rp2040-module () :
   pin p3v3
   pin gnd
 
-  net v3v3 (p3v3, rp.IOVDD, rp.USB_VDD, rp.VREG_VIN, flash.VCC)
+  net v3v3 (p3v3, rp.IOVDD, rp.USB_VDD, rp.VREG_VIN, rp.ADC_AVDD, flash.VCC)
   net v1v1 (rp.DVDD, rp.VREG_VOUT)
   net GND (gnd, rp.GND, flash.GND)
 
@@ -176,6 +185,7 @@ public pcb-module rp2040-module () :
   cap-strap(v3v3, GND, 100.0e-9)
   cap-strap(v3v3, GND, 100.0e-9)
   cap-strap(v3v3, GND, 100.0e-9)
+  cap-strap(v3v3, GND, 2.2e-6)
   cap-strap(v3v3, GND, 2.2e-6)
 
   cap-strap(v1v1, GND, 100.0e-9)
